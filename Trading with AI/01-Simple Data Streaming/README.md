@@ -1,7 +1,7 @@
 
-# Simple Apache Kafka Farm
+# Simple Apache Kafka Cluster
 
-This project provides a basic setup for an Apache Kafka farm, including an Apache Kafka broker, Zookeeper, two producers, and a consumer. The Kafka broker and Zookeeper run inside Docker containers, while the producers and consumer interact with Kafka on the local machine on port 9092.
+This project provides a basic setup for an Apache Kafka Cluster, including an Apache Kafka broker, Zookeeper, two producers, and a consumer. The Kafka broker and Zookeeper run inside Docker containers, while the producers and consumer interact with Kafka on the local machine on port 9092.
 
 updates:
 - added two producers
@@ -23,14 +23,14 @@ updates:
 
 ## How to Run
 
-Follow these steps to set up and run the Kafka farm:
+Follow these steps to set up and run the Kafka Cluster:
 
 1. **Clone the Project**:
    - Clone this project to your local machine.
     ```
     git clone https://github.com/karrabi/Samplates.git
     ```
-2. **Setup Kafka Farm**:
+2. **Setup Kafka Cluster**:
    - Open a command prompt inside the project folder.
    - Run the following command to start the Kafka broker and Zookeeper containers:
      ```
@@ -82,7 +82,7 @@ Follow these steps to set up and run the Kafka farm:
      python consumer.py
      ```
 
-6. **Stop and Clean Kafka Farm**:
+6. **Stop and Clean Kafka Cluster**:
    - Open a command prompt inside the project folder.
    - Run the following command to stop the Kafka broker and Zookeeper containers:
      ```
