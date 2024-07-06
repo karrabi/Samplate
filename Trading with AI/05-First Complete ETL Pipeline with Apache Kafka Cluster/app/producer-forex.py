@@ -36,7 +36,7 @@ def on_message(ws, message):
 
             # Convert the row to a JSON-encoded byte string and send it to the 'crypto_topic' Kafka topic
             message_bytes = json.dumps(row).encode('utf-8')
-            producer.send('crypto_topic', message_bytes)
+            producer.send('forex_topic', message_bytes)
     except Exception as e:
         # Print any exceptions that occur during message processing
         print(e)
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     while True:
         try:
             # Create a WebSocket application instance and set the callback functions
-            ws = websocket.WebSocketApp("wss://ws.finnhub.io?token=bpu4no7rh5red6hq49u0",
+            ws = websocket.WebSocketApp("wss://ws.finnhub.io?token=c5dshh2ad3ifm1hm82s0",
                                         on_message=on_message,
                                         on_error=on_error)
             ws.on_open = on_open
