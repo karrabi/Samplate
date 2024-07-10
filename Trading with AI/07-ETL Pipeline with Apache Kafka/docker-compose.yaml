@@ -54,7 +54,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092
       KAFKA_LISTENERS: PLAINTEXT://:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
       KAFKA_DELETE_TOPIC_ENABLE: 'true'
       KAFKA_BROKER_ID: 3
     depends_on:
@@ -62,6 +62,52 @@ services:
     networks:
       - kafka-net
     restart: unless-stopped
+
+  kafka-init-topics:
+    image: wurstmeister/kafka:latest
+    container_name: kafka-init-topics
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    command: >
+      bash -c "
+        echo Waiting for Kafka to be ready...
+        sleep 30
+        kafka-topics.sh --create --if-not-exists --zookeeper zookeeper:2181 --partitions 3 --replication-factor 3 --topic crypto_topic
+        kafka-topics.sh --create --if-not-exists --zookeeper zookeeper:2181 --partitions 3 --replication-factor 3 --topic forex_topic
+      "
+    networks:
+      - kafka-net
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init_oltp.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - kafka-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - kafka-net
 
 
   redis:
@@ -80,9 +126,34 @@ services:
       - kafka2
       - kafka3
 
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+      - "5540:5540"
+    networks:
+      - kafka-net
+    depends_on:
+      - redis
+
   producer1:
     build: ./app
-    container_name: producer1
+    container_name: producer_forex
+    command: python /app/producer-forex.py
+    volumes:
+      - ./app:/app
+    networks:
+      - kafka-net
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - pgadmin
+      - redis
+
+  producer2:
+    build: ./app
+    container_name: producer_crypto
     command: python /app/producer-crypto.py
     volumes:
       - ./app:/app
@@ -92,8 +163,8 @@ services:
       - kafka1
       - kafka2
       - kafka3
+      - pgadmin
       - redis
-
 
   consumer1:
     build: ./app
@@ -107,10 +178,42 @@ services:
       - kafka1
       - kafka2
       - kafka3
+      - pgadmin
+      - redis
+
+  consumer2:
+    build: ./app
+    container_name: consumer2
+    command: python /app/consumer2.py
+    volumes:
+      - ./app:/app
+    networks:
+      - kafka-net
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - pgadmin
+      - redis
+
+  consumer3:
+    build: ./app
+    container_name: consumer3
+    command: python /app/consumer3.py
+    volumes:
+      - ./app:/app
+    networks:
+      - kafka-net
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - pgadmin
       - redis
 
 volumes:
   redis-data:
+  postgres-data:
 
 networks:
   kafka-net:

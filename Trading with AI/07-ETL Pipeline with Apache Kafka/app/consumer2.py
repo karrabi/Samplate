@@ -1,80 +1,100 @@
 from kafka import KafkaConsumer
+import redis
 import time
 import json
-
+from concurrent.futures import ThreadPoolExecutor
 import psycopg2
 from psycopg2 import pool
 
-# Define the list of Kafka brokers
-brokers = ['kafka1:9092', 'kafka2:9092', 'kafka3:9092']
 
 # Wait for 40 seconds to allow Kafka brokers to start
 time.sleep(40)
 
 print('Consumer start ...')
 
+# Define the list of Kafka brokers
+brokers = ['kafka1:9092', 'kafka2:9092', 'kafka3:9092']
 # Create a Kafka consumer instance
 consumer = KafkaConsumer(
-    'crypto_topic', 'forex_topic',  # Subscribe to the 'crypto_topic' and 'forex_topic' topics
+    'crypto_topic', 'forex_topic',
     bootstrap_servers=brokers,
-    auto_offset_reset='earliest',  # Start consuming messages from the earliest available offset
-    enable_auto_commit=False,  # Disable automatic offset committing
-    group_id='my-group',  # Assign the consumer to a consumer group
-    value_deserializer=lambda m: json.loads(m.decode('utf-8'))  # Deserialize the message value from JSON
+    auto_offset_reset='earliest',  # Start consuming from the earliest available message
+    enable_auto_commit=False,  # Disable auto-commit to ensure at-least-once delivery
+    group_id='my-group',  # Consumer group ID for load balancing
+    value_deserializer=lambda m: json.loads(m.decode('utf-8')),  # Deserialize JSON messages
+    fetch_max_bytes=52428800,  # 50MB max fetch size
+    max_poll_records=5000,  # Max number of records to fetch in a single poll
+    fetch_max_wait_ms=500,  # Max time to wait for fetch
+    fetch_min_bytes=1  # Fetch at least 1 byte (don't wait for more data)
 )
 
 print('Consumer configured ...')
 
 # Create a connection pool to the PostgreSQL database
 connection_pool = pool.SimpleConnectionPool(
-    minconn=1,
-    maxconn=10,
+    minconn=1,   # Minimum number of connections in the pool
+    maxconn=10,  # Maximum number of connections in the pool
     host="postgres",
     database="mltrading",
     user="postgres",
     password="postgres"
 )
 
-# Set the batch size for message processing
-BATCH_SIZE = 1000
+# Create a connection to Redis as cache
+cache = redis.Redis(host='redis', port=6379, db=0)
 
-# Run the consumer in an infinite loop
-while True:
-    # Consume messages in batches
-    messages = consumer.poll(timeout_ms=1000, max_records=BATCH_SIZE)
+BATCH_SIZE = 1000 # Number of messages to process in a batch
 
-    # If no messages are available, continue to the next iteration
-    if not messages:
-        continue
+def process_message(message_value):
+    """
+    Process a single message and update Redis cache.
 
-    # Get a connection from the connection pool
+    Args:
+        message_value (dict): The message value containing trade data.
+    """
+    lkey = f"lastPrice:{str(message_value['s']).replace(':', '-')}"
+    cache.set(lkey, float(message_value['p']))
+    hkey = f"historyPrice:{str(message_value['s']).replace(':', '-')}"
+    cache.zadd(hkey, {str(message_value['p']): message_value['t']})
+
+
+def process_batch(records):
+    """
+    Process a batch of records, inserting them into the database and updating Redis.
+
+    Args:
+        records (list): A list of Kafka consumer records to process.
+    """
     conn = connection_pool.getconn()
-
     try:
         with conn.cursor() as cur:
-            # Begin a database transaction
             cur.execute("BEGIN")
-
-            # Iterate through the received messages
-            for topic_partition, records in messages.items():
-                for record in records:
-                    # Process the message and insert/update records in the database
-                    message_value = record.value
-                    cur.execute(f"INSERT INTO trades (price, symbol, time, volume) VALUES ({message_value['p']}, '{message_value['s']}', {message_value['t']}, {message_value['v']})")
-                    print(f"Received message: {record.topic} - {record.partition} - {message_value}")
-
-            # Commit the database transaction if all messages are processed successfully
+            for record in records:
+                print(f"Record Received: {record}")
+                message_value = record.value
+                cur.execute("INSERT INTO trades (price, symbol, time, volume) VALUES (%s, %s, %s, %s)",
+                            (message_value['p'], message_value['s'], message_value['t'], message_value['v']))
+                process_message(message_value)
             cur.execute("COMMIT")
-
-        # Commit the Kafka offsets after the successful database transaction
-        consumer.commit()
-
     except Exception as e:
-        # Rollback the database transaction if any error occurs
         conn.rollback()
-        # Handle the error, implement retries, or send messages to a dead-letter queue
-        print(f"Error: {e}")
-
+        print(f"Error processing batch: {e}")
     finally:
-        # Return the connection to the connection pool
         connection_pool.putconn(conn)
+
+def main():
+    """
+    Main function to run the Kafka consumer and process messages.
+    """
+    while True:
+        messages = consumer.poll(timeout_ms=1000, max_records=BATCH_SIZE)
+        if not messages:
+            continue
+
+        for topic_partition, records in messages.items():
+            process_batch(records)
+
+        consumer.commit()  # Commit offsets after processing all batches
+
+if __name__ == "__main__":
+    main()
