@@ -55,9 +55,10 @@ def process_message(message_value):
     lkey = f"lastPrice:{str(message_value['s']).replace(':', '-')}"
     cache.set(lkey, float(message_value['p']))
     hkey = f"historyPrice:{str(message_value['s']).replace(':', '-')}"
-    cache.zadd(hkey, {str(message_value['p']): message_value['t']})
+    value = f"{str(message_value['p'])}:{message_value['t']}"
+    cache.zadd(hkey, {value: message_value['t']})
 
-
+    
 def process_batch(records):
     """
     Process a batch of records, inserting them into the database and updating Redis.
