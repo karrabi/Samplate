@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 import psycopg2
 from psycopg2 import pool
 
+import symbols
 
 # Wait for 40 seconds to allow Kafka brokers to start
 time.sleep(40)
@@ -52,9 +53,10 @@ def process_message(message_value):
     Args:
         message_value (dict): The message value containing trade data.
     """
-    lkey = f"lastPrice:{str(message_value['s']).replace(':', '-')}"
+    symbol = symbols.PAIRS[message_value['s']]
+    lkey = f"lastPrice:{symbol}"
     cache.set(lkey, float(message_value['p']))
-    hkey = f"historyPrice:{str(message_value['s']).replace(':', '-')}"
+    hkey = f"historyPrice:{symbol}"
     value = f"{str(message_value['p'])}:{message_value['t']}"
     cache.zadd(hkey, {value: message_value['t']})
 
@@ -72,8 +74,9 @@ def process_batch(records):
             for record in records:
                 print(f"Record Received: {record}")
                 message_value = record.value
+                symbol = symbols.PAIRS[message_value['s']]
                 cur.execute("INSERT INTO trades (price, symbol, time, volume) VALUES (%s, %s, %s, %s)",
-                            (message_value['p'], message_value['s'], message_value['t'], message_value['v']))
+                            (message_value['p'], symbol, message_value['t'], message_value['v']))
                 process_message(message_value)
             cur.execute("COMMIT")
     except Exception as e:
