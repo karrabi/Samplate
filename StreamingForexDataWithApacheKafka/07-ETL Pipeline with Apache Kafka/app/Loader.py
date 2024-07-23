@@ -17,18 +17,18 @@ connection_pool = pool.SimpleConnectionPool(
 cache = redis.Redis(host='redis', port=6379, db=0)
 
 
-def loadToRedis(message_value):
+def loadToRedis(value_record):
     """
     Process a single message and update Redis cache.
 
     Args:
         message_value (dict): The message value containing trade data.
     """
-    lkey = f"lastPrice:{message_value['s']}"
-    cache.set(lkey, float(message_value['p']))
-    hkey = f"historyPrice:{message_value['s']}"
-    value = f"{str(message_value['p'])}:{message_value['t']}"
-    cache.zadd(hkey, {value: message_value['t']})
+    lkey = f"lastPrice:{value_record['s']}"
+    cache.set(lkey, float(value_record['p']))
+    hkey = f"historyPrice:{value_record['s']}"
+    value = f"{str(value_record['p'])}:{value_record['t']}"
+    cache.zadd(hkey, {value: value_record['t']})
 
 
 
@@ -44,10 +44,10 @@ def loadToDatabase(records):
         with conn.cursor() as cur:
             cur.execute("BEGIN")
             for record in records:
-                print(f"Record Received: {record}")
+                value_record = record.value
                 cur.execute("INSERT INTO trades (price, symbol, time, volume) VALUES (%s, %s, %s, %s)",
-                            (record['p'], record['s'], record['t'], record['v']))
-                loadToRedis(record)
+                            (value_record['p'], value_record['s'], value_record['t'], value_record['v']))
+                loadToRedis(value_record)
             cur.execute("COMMIT")
     except Exception as e:
         conn.rollback()

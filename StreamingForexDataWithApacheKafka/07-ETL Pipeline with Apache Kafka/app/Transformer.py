@@ -1,7 +1,10 @@
 import symbols
 
 def transform(records):
-    for data in records:
-        data.value['s'] = symbols.PAIRS[data.value['s']]
-    return records
-
+    try:
+        for data in records:
+            data = data.value
+            data['s'] = symbols.PAIRS[data['s']]
+        return records
+    except Exception as e:
+        print(f"Error: {e}")

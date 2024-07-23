@@ -42,6 +42,7 @@ def main():
             continue
 
         for topic_partition, records in messages.items():
+            print(f"{len(records)} Records received")
             transformed_records = Transformer.transform(records)
             Loader.loadToDatabase(transformed_records)
 
