@@ -8,7 +8,7 @@ connection_pool = pool.SimpleConnectionPool(
     minconn=1,   # Minimum number of connections in the pool
     maxconn=10,  # Maximum number of connections in the pool
     host="postgres",
-    database="mltrading",
+    database="tradingmarketdata",
     user="postgres",
     password="postgres"
 )
