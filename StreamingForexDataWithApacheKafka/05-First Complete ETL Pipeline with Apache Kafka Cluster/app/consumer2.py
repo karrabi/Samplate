@@ -30,7 +30,7 @@ connection_pool = pool.SimpleConnectionPool(
     minconn=1,
     maxconn=10,
     host="postgres",
-    database="mltrading",
+    database="tradingmarketdata",
     user="postgres",
     password="postgres"
 )

@@ -8,7 +8,7 @@ from psycopg2 import pool
 pool = psycopg2.pool.SimpleConnectionPool(
     minconn=1,
     maxconn=10,
-    database="mltrading",
+    database="tradingmarketdata",
     user="postgres",
     password="postgres",
 )

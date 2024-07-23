@@ -1,4 +1,4 @@
-CREATE DATABASE "mltrading"
+CREATE DATABASE "tradingmarketdata"
     WITH 
     OWNER = postgres
     ENCODING = 'UTF8'
@@ -10,7 +10,7 @@ CREATE DATABASE "mltrading"
 	
 	
 	
-\c mltrading postgres;
+\c tradingmarketdata postgres;
 
 CREATE TABLE IF NOT EXISTS public.trades
 (
