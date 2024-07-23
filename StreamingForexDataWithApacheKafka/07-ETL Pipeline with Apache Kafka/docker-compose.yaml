@@ -138,8 +138,8 @@ services:
 
   producer1:
     build: ./app
-    container_name: producer_forex
-    command: python /app/producer-forex.py
+    container_name: extractor_forex
+    command: python /app/Extractor-Forex.py
     volumes:
       - ./app:/app
     networks:
@@ -153,8 +153,8 @@ services:
 
   producer2:
     build: ./app
-    container_name: producer_crypto
-    command: python /app/producer-crypto.py
+    container_name: extractor_crypto
+    command: python /app/Extractor-Crypto.py
     volumes:
       - ./app:/app
     networks:
