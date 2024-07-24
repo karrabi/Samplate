@@ -12,8 +12,8 @@ This project provides a basic setup for an Apache Kafka Cluster, including an Ap
 
 ### Outside Docker
 
-1. **Producer**: A Python script that generates Kafka messages.
-2. **Consumer**: Another Python script that consumes Kafka messages.
+1. **Producer**: A Python script that generates messages for Kafka.
+2. **Consumer**: Another Python script that consumes messages from Kafka.
 
 ## How to Run
 

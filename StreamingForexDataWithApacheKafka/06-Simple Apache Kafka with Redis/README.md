@@ -7,8 +7,8 @@ This project provides a basic setup for an Apache Kafka Cluster, including an Ap
 
 1. **Apache Kafka Broker**: The Kafka broker runs inside a Docker container.
 2. **Zookeeper**: Zookeeper, which is essential for Kafka coordination, also runs inside a Docker container.
-3. **Producer**: A Python script that generates Kafka messages.
-4. **Consumer**: Another Python script that consumes Kafka messages.
+3. **Producer**: A Python script that generates messages for Kafka.
+4. **Consumer**: Another Python script that consumes messages from Kafka.
 
 ## How to Run
 
