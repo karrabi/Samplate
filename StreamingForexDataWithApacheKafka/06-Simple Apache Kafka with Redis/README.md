@@ -5,15 +5,10 @@ This project provides a basic setup for an Apache Kafka Cluster, including an Ap
 
 ## Project Structure
 
-### Inside Docker
-
 1. **Apache Kafka Broker**: The Kafka broker runs inside a Docker container.
 2. **Zookeeper**: Zookeeper, which is essential for Kafka coordination, also runs inside a Docker container.
-
-### Outside Docker
-
-1. **Producer**: A Python script that generates Kafka messages.
-2. **Consumer**: Another Python script that consumes Kafka messages.
+3. **Producer**: A Python script that generates Kafka messages.
+4. **Consumer**: Another Python script that consumes Kafka messages.
 
 ## How to Run
 
@@ -27,50 +22,14 @@ Follow these steps to set up and run the Kafka Cluster:
    ```
 
 
-2. **Setup Kafka Cluster**:
+2. **Setup Project**:
    - Open a command prompt inside *Samplate/StreamingForexDataWithApacheKafka* folder.
    - Run the following command to start the Kafka broker and Zookeeper containers:
      ```bash
      docker compose up
      ```
 
-3. **Prepare Producer and Consumer**:
-   - Open another command prompt inside *Samplate/StreamingForexDataWithApacheKafka* folder.
-   - Create a virtual environment for Python:
-     ```bash
-     python -m venv venv
-     ```
-   - Activate the virtual environment:
-     ```bash
-     venv\Scripts\Activate
-     ```
-   - Install the necessary Python packages:
-     ```bash
-     pip install -r requirements.txt
-     ```
-
-4. **Run the Producer**:
-   - In the same command prompt, activate the virtual environment again:
-     ```bash
-     venv\Scripts\Activate
-     ```
-   - Run the producer script:
-     ```bash
-     python producer.py
-     ```
-
-5. **Run the Consumer**:
-   - Open another command prompt inside the project folder.
-   - Activate the virtual environment:
-     ```bash
-     venv\Scripts\Activate
-     ```
-   - Run the consumer script:
-     ```bash
-     python consumer.py
-     ```
-
-6. **Stop and Clean the environment**:
+3. **Stop and Clean the environment**:
    - Open a command prompt inside the project folder.
    - Run the following command to stop the Kafka broker and Zookeeper containers:
      ```bash

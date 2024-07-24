@@ -1,13 +1,7 @@
 
 # Simple Apache Kafka Cluster
 
-This project provides a basic setup for an Apache Kafka Cluster, including an Apache Kafka broker, Zookeeper, two producers, and a consumer. The Kafka broker and Zookeeper run inside Docker containers, while the producers and consumer interact with Kafka on the local machine on port 9092.
-
-updates:
-- added two producers
-- producers fetch trading market data from a websocket. 
-  you can access the websocket documentation here:(https://finnhub.io/docs/api/websocket-trades)
-
+This project provides a basic setup for an Apache Kafka Cluster, including an Apache Kafka broker, Zookeeper, a producer, and a consumer. The Kafka broker and Zookeeper run inside Docker containers, while the producer and consumer interact with Kafka on the local machine.
 
 ## Project Structure
 
@@ -25,72 +19,68 @@ updates:
 
 Follow these steps to set up and run the Kafka Cluster:
 
-1. **Clone the Project**:
-   - Clone this project to your local machine.
-    ```
-    git clone https://github.com/karrabi/Samplates.git
-    ```
+1. **Clone the Repository**:
+   - Clone the repository:
+   ```bash
+   git clone https://github.com/karrabi/Samplate.git
+   cd Samplate/StreamingForexDataWithApacheKafka
+   ```
+
+
 2. **Setup Kafka Cluster**:
-   - Open a command prompt inside the project folder.
+   - Open a command prompt inside *Samplate/StreamingForexDataWithApacheKafka* folder.
    - Run the following command to start the Kafka broker and Zookeeper containers:
-     ```
-     docker-compose up
+     ```bash
+     docker compose up
      ```
 
 3. **Prepare Producer and Consumer**:
-   - Open another command prompt inside the project folder.
-   - Create a virtual environment for Python (if you haven't already):
-     ```
+   - Open another command prompt inside *Samplate/StreamingForexDataWithApacheKafka* folder.
+   - Create a virtual environment for Python:
+     ```bash
      python -m venv venv
      ```
    - Activate the virtual environment:
-     ```
+     ```bash
      venv\Scripts\Activate
      ```
    - Install the necessary Python packages:
-     ```
+     ```bash
      pip install -r requirements.txt
      ```
 
 4. **Run the Producers**:
    - In the same command prompt, activate the virtual environment again:
-     ```
+     ```bash
      venv\Scripts\Activate
      ```
-   - Run the producer script:
+   - Run the first producer script:
+     ```bash
+     python producer-forex.py
      ```
-     python producer-btc.py
-     ```
-
-   - In the another command prompt, activate the virtual environment again:
-     ```
+   - Open another command prompt inside the project folder.
+   - Activate the virtual environment:
+     ```bash
      venv\Scripts\Activate
      ```
-   - Run the producer script:
+   - Run the second producer script:
+     ```bash
+     python producer-crypto.py
      ```
-     python producer-eur.py
-     ```
-
 5. **Run the Consumer**:
    - Open another command prompt inside the project folder.
    - Activate the virtual environment:
-     ```
+     ```bash
      venv\Scripts\Activate
      ```
    - Run the consumer script:
-     ```
+     ```bash
      python consumer.py
      ```
 
-6. **Stop and Clean Kafka Cluster**:
+6. **Stop and Clean the environment**:
    - Open a command prompt inside the project folder.
    - Run the following command to stop the Kafka broker and Zookeeper containers:
-     ```
+     ```bash
      docker-compose down
      ```
-
-Feel free to customize this `README.md` further based on any additional details you'd like to provide.
-
-
-
-
