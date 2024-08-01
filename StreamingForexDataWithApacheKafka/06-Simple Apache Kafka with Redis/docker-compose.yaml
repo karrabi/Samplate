@@ -97,6 +97,16 @@ services:
       - kafka2
       - kafka3
 
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+      - "5540:5540"
+    networks:
+      - kafka-net
+    depends_on:
+      - redis
+      
   producer1:
     build: ./app
     container_name: producer1

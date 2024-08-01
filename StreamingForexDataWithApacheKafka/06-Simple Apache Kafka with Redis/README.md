@@ -36,7 +36,17 @@ Follow these steps to set up and run the Kafka Cluster:
      docker compose up
      ```
 
-3. **Stop and Clean the environment**:
+3. **Connect to Redis**:
+   - Open a browser in your local machine
+   - Go to http://localhost:5040
+   - inside Redis-insight resigter Redis database as follow:
+![structure](../images/redis-insight01.png)
+![structure](../images/redis-insight02.png)
+![structure](../images/redis-insight03.png)
+![structure](../images/redis-insight04.png)
+![structure](../images/redis-insight05.png)
+
+4. **Stop and Clean the environment**:
    - Open a command prompt inside the project folder.
    - Run the following command to stop the Kafka broker and Zookeeper containers:
      ```bash

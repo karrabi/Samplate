@@ -81,9 +81,20 @@ Follow these steps to set up and run the Kafka Cluster:
      python consumer.py
      ```
 
-6. **Stop and Clean the environment**:
+6. **Connect to Database**:
+   - Open a browser in your local machine
+   - Go to http://localhost:5050/login
+   - Enter postgres username and password as is in docker-compose.yaml file and connect to PGAdmin
+   - inside PGAdmin resigter postgres server as follow:
+![structure](../images/pgadmin01.png)
+![structure](../images/pgadmin02.png)
+![structure](../images/pgadmin03.png)
+![structure](../images/pgadmin04.png)
+![structure](../images/pgadmin05.png)
+
+7. **Stop and Clean the environment**:
    - Open a command prompt inside the project folder.
    - Run the following command to stop the Kafka broker and Zookeeper containers:
      ```bash
-     docker-compose down
+     docker-compose down -v
      ```
