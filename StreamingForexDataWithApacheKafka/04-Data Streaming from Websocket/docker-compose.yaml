@@ -45,35 +45,6 @@ services:
       - kafka-net
     restart: unless-stopped
 
-  postgres:
-    image: postgres:13
-    container_name: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./init_oltp.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-    networks:
-      - kafka-net
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
-      PGADMIN_DEFAULT_PASSWORD: password
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres
-    networks:
-      - kafka-net
-
   producer1:
     build: ./app
     container_name: producer_forex
@@ -85,7 +56,6 @@ services:
     depends_on:
       - kafka1
       - kafka2
-      - pgadmin
 
 
   producer2:
@@ -99,7 +69,6 @@ services:
     depends_on:
       - kafka1
       - kafka2
-      - pgadmin
 
   consumer:
     build: ./app
@@ -112,10 +81,7 @@ services:
     depends_on:
       - kafka1
       - kafka2
-      - pgadmin
 
-volumes:
-  postgres-data:
 
 networks:
   kafka-net:

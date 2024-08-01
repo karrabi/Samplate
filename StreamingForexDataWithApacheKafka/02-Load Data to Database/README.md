@@ -9,11 +9,14 @@ This project provides a basic setup for an Apache Kafka Cluster, including an Ap
 
 1. **Apache Kafka Broker**: The Kafka broker runs inside a Docker container.
 2. **Zookeeper**: Zookeeper, which is essential for Kafka coordination, also runs inside a Docker container.
+3. **PostgreSQL**: The PostgreSQL server runs inside a Docker container.
+4. **PGAdmin**: The PGAdmin, to access PostgreSQL database, runs inside a Docker container.
 
 ### Outside Docker
 
 1. **Producer**: A Python script that generates messages for Kafka.
 2. **Consumer**: Another Python script that consumes messages from Kafka.
+![structure](../images/Step%2002.gif)
 
 ## How to Run
 

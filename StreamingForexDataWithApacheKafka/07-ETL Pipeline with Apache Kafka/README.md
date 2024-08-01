@@ -5,10 +5,21 @@ This project provides a basic setup for an Apache Kafka Cluster, including an Ap
 
 ## Project Structure
 
-1. **Apache Kafka Broker**: The Kafka broker runs inside a Docker container.
+1. **Apache Kafka Broker 1**: The Kafka broker runs inside a Docker container.
+2. **Apache Kafka Broker 2**: Another Kafka broker, runs inside a Docker container.
+3. **Apache Kafka Broker 3**: Another Kafka broker, runs inside a Docker container.
 2. **Zookeeper**: Zookeeper, which is essential for Kafka coordination, also runs inside a Docker container.
-3. **Producer**: A Python script that generates messages for Kafka.
-4. **Consumer**: Another Python script that consumes messages from Kafka.
+3. **PostgreSQL**: The PostgreSQL server runs inside a Docker container.
+4. **PGAdmin**: The PGAdmin, to access PostgreSQL database, runs inside a Docker container.
+3. **Redis**: Redis Server, as Cache, runs insode a Docker container.
+6. **Redis-insight**: Redis-insight, for visualize data for Redis.
+5. **Producer-crypto**: A Python script that Extract some Crypto Data as messages for Kafka, runs inside a Docker container.
+6. **Producer-forex**: A Python script that Extract some Forex Data as messages for Kafka, runs inside a Docker container.
+7. **Consumer 1**: A Python script that consumes messages from Kafka, and Load the data to database.
+8. **Consumer 2**: A Python script that consumes messages from Kafka, and Load the data to database.
+9. **Consumer 3**: A Python script that consumes messages from Kafka, and Load the data to database.
+
+![structure](../images/Step%2007.gif)
 
 ## How to Run
 

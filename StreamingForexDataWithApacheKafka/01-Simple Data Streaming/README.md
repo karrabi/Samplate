@@ -4,7 +4,6 @@
 This project provides a basic setup for an Apache Kafka Cluster, including an Apache Kafka broker, Zookeeper, a producer, and a consumer. The Kafka broker and Zookeeper run inside Docker containers, while the producer and consumer interact with Kafka on the local machine.
 
 ## Project Structure
-
 ### Inside Docker
 
 1. **Apache Kafka Broker**: The Kafka broker runs inside a Docker container.
@@ -12,8 +11,10 @@ This project provides a basic setup for an Apache Kafka Cluster, including an Ap
 
 ### Outside Docker
 
-1. **Producer**: A Python script that generates messages for Kafka.
-2. **Consumer**: Another Python script that consumes messages from Kafka.
+1. **Producer-btc**: A Python script that Extract some Crypto Data as messages for Kafka.
+2. **Producer-eur**: A Python script that Extract some Forex Data as messages for Kafka.
+3. **Consumer**: Another Python script that consumes messages from Kafka.
+![structure](../images/Step%2001.gif)
 
 ## How to Run
 
